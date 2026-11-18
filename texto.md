@@ -1,11 +1,13 @@
-/entrar a carpeta
-~ cd code/Inguieneria\ economica/
+entrar a carpeta
+~ cd code/Inguieneria\ economica/Tarea3_Ingeco_python
 
-/activar programa
+activar programa
 ~ source "/home/Paz/.vscode-server/code/Inguieneria economica/ingeco/bin/activate"
 
-/desactivar vemv
+desactivar vemv
 ~ deactivate
 
-/correr programa
+correr programa
 ~ python3 TareaIng3.py 
+
+<h1> Repositorio: https://github.com/Paz2712/Tarea3_Ingeco_python <h1>
