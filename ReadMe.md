@@ -10,4 +10,3 @@ desactivar vemv
 correr programa
 ~ python3 TareaIng3.py 
 
-<h1> Repositorio: https://github.com/Paz2712/Tarea3_Ingeco_python <h1>

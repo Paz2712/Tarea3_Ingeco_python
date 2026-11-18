@@ -1,9 +1,11 @@
 # el %% sirve para activar el kernel de jupiter en vscode
+# al crear una celda ejecutable
 # %%
 
-# en el caso de utilizar google colab
-# quite el hashtag[#] para que corra el sigiente comando(↓)
-# !pip install numpy_financial
+# ----------------------------------------------------------
+# IMPORTACIÓN DE LIBRERÍAS
+# ----------------------------------------------------------
+
 
 import numpy as np
 import numpy_financial as npf
@@ -34,7 +36,11 @@ def Sacar_FlujoCaja(**Base):
     print("\n")
     return(FC)
     
-#inicio real de act de tarea
+
+# ==========================================================
+# INICIO DEL PROGRAMA
+# ==========================================================
+
 k= 29
 semilla= 2025730294
 f= Factor_invercion(k)
@@ -42,7 +48,12 @@ r= TdescuentoRFA(k)
 
 print(k, "(K) ", f, "(Factor de inversión) ", round(r,2), "(Tasa de descuento) ", semilla, "(rol)\n")
 #calculos de flujo de caja
+# ==========================================================
+# PROYECTO A
+# ==========================================================
+
 FlujoDeCaja_A = {
+    # La inversión inicial se ajusta por f
     'inversion_inicial (Año 0)': -18000000 * f,
         'Año 1':  5000000,
         'Año 2': 6500000,
@@ -53,7 +64,10 @@ FlujoDeCaja_A = {
 
 FC = 0
 i= 0
+# Lista final de flujos usada para VAN y TIR
 FlujoA= [0,0,0,0,0]
+
+# Construcción del flujo de caja
 for Capital in FlujoDeCaja_A:
     
     FC= FlujoDeCaja_A[Capital] #/((1+r)**i)
@@ -61,7 +75,9 @@ for Capital in FlujoDeCaja_A:
         FlujoA[4]+= FC
         i= i -1
         print(FlujoA[i], " ||")
-        
+    
+    # Cuando llega la recuperación del año 4
+    # se suma al flujo del mismo año
     else:
         FlujoA[i]= FC
         print(FlujoA[i], " ||")
@@ -69,7 +85,7 @@ for Capital in FlujoDeCaja_A:
     
     
     
-
+# Cálculo del VAN y la TIR
 VanA= round(npf.npv(r,FlujoA),2)
 TirA= round(npf.irr(FlujoA),2)
 print("Van FC_ A: ",VanA, "Tir FC_ A: ", TirA*100 , "%")
@@ -137,6 +153,11 @@ TirC= round(npf.irr(FlujoC),2)
 print("Van FC_ B: ",VanC, "Tir FC_ B: ", TirC*100,"%")
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
+# ==========================================================
+# TABLAS RESUMEN
+# ==========================================================
+
+# Tabla de flujos construidos
 print("Resumen: (↓)\n")
 
 TablaFlujos = pd.DataFrame({
@@ -151,7 +172,8 @@ TablaFlujos = pd.DataFrame({
 TablaFlujos = TablaFlujos.set_index("Proyecto")
 
 display(TablaFlujos)
-    
+
+# Tabla de indicadores financieros
 TablaResultados = pd.DataFrame({
     "Proyecto":["A","B","C"],
     "VAN(CLP)":[VanA,VanB,VanC],
@@ -164,19 +186,24 @@ TablaResultados= TablaResultados.set_index("Proyecto")
 display(TablaResultados)
 
 """
-Parte 2; explicación
+Parte 2; en jupiter explicación de porque se escoje el proyecto A
 """
 
 
-'''
-Parte 3
-'''
+# ==========================================================
+# PARTE 3 - ANÁLISIS DE SENSIBILIDAD
+# ==========================================================
 
 #sea el proyecto escojido el A
+# Se analiza el proyecto seleccionado
 mValores = [0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4]
+# Lista donde se almacenarán los VAN calculados
+
 VanSensibilidad = []
 
 i=0
+
+# Copia auxiliar del flujo original
 Valor = [0,0,0,0,0]
 
 while (i < 5):
@@ -185,9 +212,13 @@ while (i < 5):
 
 Valores = [0,0,0,0,0]
 
+# Evaluación de los nueve escenarios
 for m in mValores:
     
+    # La inversión inicial queda fija
     Valores[0] = Valor[0]
+    
+    # Los flujos operativos se multiplican por m
     Valores[1] = Valor[1] * m
     Valores[2] = Valor[2] * m
     Valores[3] = Valor[3] * m
@@ -195,15 +226,30 @@ for m in mValores:
     
     VAN = npf.npv(r, Valores)
 
+    #agregamos VAN en cada ciclo
     VanSensibilidad.append(VAN)
 
     print("m =",m)
-    print("VAN =",round(VAN,2))
+    print("VAN =",VAN)
     print("----------------")
+    
+    
+# Tabla de sensibilidad
+TablaSensibilidadesM = pd.DataFrame({
+    "Valor de [ m ]": [0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4],
+    "Van": [round(VanSensibilidad[0],2),round(VanSensibilidad[1],2),round(VanSensibilidad[2],2)
+            ,round(VanSensibilidad[3],2),round(VanSensibilidad[4],2), round(VanSensibilidad[5],2)
+            ,round(VanSensibilidad[6],2),round(VanSensibilidad[7],2),round(VanSensibilidad[8],2),
+            ]
+})
+
+TablaSensibilidadesM = TablaSensibilidadesM.set_index("Valor de [ m ]")
+display(TablaSensibilidadesM)
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("Resumen:")
 
+# Gráfico VAN vs m
 plt.figure(figsize=(8,5))
 
 plt.plot(mValores,VanSensibilidad,marker="o")
@@ -221,9 +267,13 @@ plt.grid()
 plt.show()
 
 """
-explicaion graf
+explicacion grafico en jupyter
 """
 
+# ==========================================================
+# BÚSQUEDA DEL VALOR CRÍTICO DE m
+# ==========================================================
+# Se busca el valor de m donde VAN≈0
 for m in np.arange(0.6,1.41,0.01):
     
     Valores[0] = Valor[0]
@@ -237,20 +287,62 @@ for m in np.arange(0.6,1.41,0.01):
     VanSensibilidad.append(VAN)
 
     
-
+    # Se considera suficientemente cercano a cero
     if abs(VAN) < 50000:
         print("m critico =",m)
         print("VAN =",VAN)
         break
-    
+
+
+# ----------------------------------------------------------
+# CREACIÓN DE LA TABLA DE SENSIBILIDAD
+# ----------------------------------------------------------
+# Se construye un DataFrame para mostrar
+# los resultados del análisis de sensibilidad.
+# Cada fila representa un valor distinto del factor m y
+# su respectivo VAN calculado anteriormente.
+
+TablaSensibilidadesM = pd.DataFrame({
+
+    # Valores evaluados para el factor de ajuste m
+    "Valor de [ m ]": [0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4],
+
+    # VAN obtenido para cada valor de m.
+    # Se utiliza round(...,2) para mostrar los resultados
+    # con dos decimales y facilitar la lectura.
+    "Van": [
+        round(VanSensibilidad[0],2),
+        round(VanSensibilidad[1],2),
+        round(VanSensibilidad[2],2),
+        round(VanSensibilidad[3],2),
+        round(VanSensibilidad[4],2),
+        round(VanSensibilidad[5],2),
+        round(VanSensibilidad[6],2),
+        round(VanSensibilidad[7],2),
+        round(VanSensibilidad[8],2),
+    ]
+})
+
+TablaSensibilidadesM = TablaSensibilidadesM.set_index("Valor de [ m ]")
+
+# Muestra la tabla en formato tabular dentro del Notebook.
+display(TablaSensibilidadesM)
 print("~~~~~~~~~~~~~~~~~~~~~+")
 
+# ==========================================================
+# PARTE 4 - SIMULACIÓN DE MONTE CARLO
+# ==========================================================
+
+
+# Generador aleatorio reproducible
 rng = np.random.default_rng(2025730294)
 
+# Distribución uniforme
 m_uniforme = rng.uniform(0.60,1.40,1000)
 
 VanUniforme = []
 
+# Cálculo de 1000 VAN
 for m in m_uniforme:
     
     Valores[0] = Valor[0]
@@ -263,6 +355,8 @@ for m in m_uniforme:
 
     VanUniforme.append(VAN)
 
+
+# Distribución triangular
 m_triangular = rng.triangular(0.60,1.00,1.40,1000)
 
 VanTriangular = []
@@ -279,6 +373,11 @@ for m in m_triangular:
 
     VanTriangular.append(VAN)
 
+# ----------------------------------------------------------
+# HISTOGRAMA DISTRIBUCIÓN UNIFORME
+# ----------------------------------------------------------
+
+
 plt.hist(VanUniforme,bins=20)
 
 plt.axvline(0,color='red')
@@ -291,6 +390,10 @@ plt.ylabel("Frecuencia")
 
 plt.show()
 
+# ----------------------------------------------------------
+# HISTOGRAMA DISTRIBUCIÓN TRIANGULAR
+# ----------------------------------------------------------
+
 plt.hist(VanTriangular,bins=20)
 
 plt.axvline(0,color='red')
@@ -302,6 +405,10 @@ plt.xlabel("VAN")
 plt.ylabel("Frecuencia")
 
 plt.show()
+
+# ----------------------------------------------------------
+# ESTADÍSTICAS RESUMEN
+# ----------------------------------------------------------
 
 PositivosU = np.sum(np.array(VanUniforme) > 0)
 NegativosU = np.sum(np.array(VanUniforme) < 0)
@@ -325,7 +432,10 @@ print("% Positivos:",PositivosT/1000*100)
 print("VAN Promedio:",np.mean(VanTriangular))
 print("Desv.Est:",np.std(VanTriangular))
 
-# tabla comparativa
+# ----------------------------------------------------------
+# TABLA COMPARATIVA FINAL
+# ----------------------------------------------------------
+
 
 TablaResultadosHistogramas = pd.DataFrame({
     "Histogramas":["Uniforme","Triangular"],
