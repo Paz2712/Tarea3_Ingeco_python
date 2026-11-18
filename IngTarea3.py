@@ -1,4 +1,9 @@
+# el %% sirve para activar el kernel de jupiter en vscode
 # %%
+
+# en el caso de utilizar google colab
+# quite el hashtag[#] para que corra el sigiente comando(↓)
+# !pip install numpy_financial
 
 import numpy as np
 import numpy_financial as npf
@@ -239,8 +244,7 @@ for m in np.arange(0.6,1.41,0.01):
         break
     
 print("~~~~~~~~~~~~~~~~~~~~~+")
-#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
 rng = np.random.default_rng(2025730294)
 
 m_uniforme = rng.uniform(0.60,1.40,1000)
