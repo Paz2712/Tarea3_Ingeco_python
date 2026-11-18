@@ -239,7 +239,8 @@ for m in np.arange(0.6,1.41,0.01):
         break
     
 print("~~~~~~~~~~~~~~~~~~~~~+")
-
+#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 rng = np.random.default_rng(2025730294)
 
 m_uniforme = rng.uniform(0.60,1.40,1000)
@@ -319,5 +320,19 @@ print("Negativos:",NegativosT)
 print("% Positivos:",PositivosT/1000*100)
 print("VAN Promedio:",np.mean(VanTriangular))
 print("Desv.Est:",np.std(VanTriangular))
+
+# tabla comparativa
+
+TablaResultadosHistogramas = pd.DataFrame({
+    "Histogramas":["Uniforme","Triangular"],
+    "Positivos":[PositivosU,PositivosT],
+    "Negativos:": [NegativosU,NegativosT],
+    "% Positivos:":[PositivosU/1000*100,PositivosT/1000*100],
+    "Inversión Inicial":[round(np.mean(VanUniforme),2), round(np.mean(VanTriangular),2)],
+    "Desv.Est:":[round(np.std(VanUniforme),2) , round(np.std(VanTriangular),2)]
+})
+
+TablaResultadosHistogramas= TablaResultadosHistogramas.set_index("Histogramas")
+display(TablaResultadosHistogramas)
 
 # %%
