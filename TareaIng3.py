@@ -132,7 +132,7 @@ TirC= round(npf.irr(FlujoC),2)
 print("Van FC_ B: ",VanC, "Tir FC_ B: ", TirC*100,"%")
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-print("Resumen: (⬇️)\n")
+print("Resumen: (↓)\n")
 
 TablaFlujos = pd.DataFrame({
     "Proyecto": ["A", "B", "C"],
