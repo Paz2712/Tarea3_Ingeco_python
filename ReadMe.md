@@ -1,3 +1,5 @@
+Ignora este doc es solo documentacion propia de mi pc, :D
+
 entrar a carpeta
 ~ cd code/Inguieneria\ economica/Tarea3_Ingeco_python
 
